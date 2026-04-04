@@ -24,7 +24,7 @@ class CriminalCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final nivel = PeligrosidadHelper.calcular(criminal.delitos);
+    final nivel = PeligrosidadHelper.calcular(criminal.allDelitos);
     final tag = heroTag ?? 'criminal_${criminal.hashRequisitoriado}';
 
     return Card(
@@ -56,11 +56,7 @@ class CriminalCard extends ConsumerWidget {
                   children: [
                     // Name
                     Text(
-                      Formatters.formatFullName(
-                        apellidoPaterno: criminal.apellidoPaterno,
-                        apellidoMaterno: criminal.apellidoMaterno,
-                        nombres: criminal.nombres,
-                      ),
+                      criminal.displayName,
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 14,
@@ -81,7 +77,9 @@ class CriminalCard extends ConsumerWidget {
                         const SizedBox(width: 3),
                         Expanded(
                           child: Text(
-                            '${criminal.departamento} — ${criminal.provincia}',
+                            criminal.departamento.isNotEmpty
+                        ? '${criminal.departamento} — ${criminal.provincia}'
+                        : 'Ubicación no disponible',
                             style: const TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondaryLight,
@@ -102,9 +100,9 @@ class CriminalCard extends ConsumerWidget {
                         _PeligrosidadChip(nivel: nivel),
 
                         // Delito chip
-                        if (criminal.delitos.isNotEmpty)
+                        if (criminal.allDelitos.isNotEmpty)
                           _DelitoChip(
-                            label: Formatters.firstDelito(criminal.delitos),
+                            label: Formatters.firstDelito(criminal.allDelitos),
                           ),
                       ],
                     ),

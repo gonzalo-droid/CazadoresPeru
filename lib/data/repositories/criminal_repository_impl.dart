@@ -12,6 +12,7 @@ import '../local/isar_service.dart';
 import '../local/schemas/cached_criminal_schema.dart';
 import '../local/schemas/favorite_schema.dart';
 import '../remote/api_service.dart';
+import '../remote/dto/criminal_summary_dto.dart';
 import '../remote/dto/search_request_dto.dart';
 
 part 'criminal_repository_impl.g.dart';
@@ -42,9 +43,10 @@ class CriminalRepositoryImpl implements CriminalRepository {
     }
 
     try {
+      // Spring Boot es 0-indexed, nuestra UI usa 1-indexed → restamos 1
       final request = SearchRequestDto(
         pageInfo: PageInfoDto(
-          page: filters.page,
+          page: filters.page - 1,
           size: filters.size,
           sortBy: filters.sortBy,
           direction: filters.direction,
@@ -63,22 +65,7 @@ class CriminalRepositoryImpl implements CriminalRepository {
 
       final response = await apiService.buscarRequisitoriados(request);
       final items = response.content
-          .map(
-            (dto) => CriminalSummary(
-              idRequisitoriado: dto.idRequisitoriado,
-              hashRequisitoriado: dto.hashRequisitoriado,
-              apellidoPaterno: dto.apellidoPaterno,
-              apellidoMaterno: dto.apellidoMaterno,
-              nombres: dto.nombres,
-              sexo: dto.sexo,
-              montoRecompensa: dto.montoRecompensa,
-              montoRecompensaSpace: dto.montoRecompensaSpace,
-              foto: dto.foto,
-              delitos: dto.delitos,
-              departamento: dto.departamento,
-              provincia: dto.provincia,
-            ),
-          )
+          .map(_summaryDtoToEntity)
           .toList();
 
       // Cache first page
@@ -91,7 +78,7 @@ class CriminalRepositoryImpl implements CriminalRepository {
           items: items,
           totalElements: response.totalElements,
           totalPages: response.totalPages,
-          currentPage: response.number,
+          currentPage: response.number + 1, // normalizar a 1-indexed
           isLast: response.last,
         ),
       );
@@ -99,6 +86,17 @@ class CriminalRepositoryImpl implements CriminalRepository {
       return Left(ApiException.fromDioException(e));
     } catch (e) {
       return Left(ApiException.unknown(message: e.toString()));
+    }
+  }
+
+  // ─── Top 5 ────────────────────────────────────────────────────────────────
+
+  Future<List<CriminalSummary>> getTop5() async {
+    try {
+      final dtos = await apiService.getTop5();
+      return dtos.map(_summaryDtoToEntity).toList();
+    } catch (_) {
+      return [];
     }
   }
 
@@ -114,6 +112,8 @@ class CriminalRepositoryImpl implements CriminalRepository {
         CriminalSummary(
           idRequisitoriado: dto.idRequisitoriado,
           hashRequisitoriado: dto.hashRequisitoriado,
+          nombreCompleto:
+              '${dto.apellidoPaterno} ${dto.apellidoMaterno} ${dto.nombres}',
           apellidoPaterno: dto.apellidoPaterno,
           apellidoMaterno: dto.apellidoMaterno,
           nombres: dto.nombres,
@@ -163,7 +163,7 @@ class CriminalRepositoryImpl implements CriminalRepository {
       ..montoRecompensa = criminal.montoRecompensa
       ..montoRecompensaSpace = criminal.montoRecompensaSpace
       ..fotoBase64 = criminal.foto
-      ..delitos = criminal.delitos
+      ..delitos = criminal.allDelitos
       ..departamento = criminal.departamento
       ..provincia = criminal.provincia
       ..savedAt = DateTime.now();
@@ -174,6 +174,17 @@ class CriminalRepositoryImpl implements CriminalRepository {
   Future<void> removeFavorite(String hash) => isarService.removeFavorite(hash);
 
   // ─── Private helpers ──────────────────────────────────────────────────────
+
+  CriminalSummary _summaryDtoToEntity(CriminalSummaryDto dto) =>
+      CriminalSummary(
+        idRequisitoriado: dto.idRequisitoriado,
+        hashRequisitoriado: dto.hashRequisitoriado,
+        nombreCompleto: dto.nombreCompleto,
+        montoRecompensa: dto.montoRecompensa,
+        montoRecompensaSpace: dto.montoRecompensaSpace,
+        foto: dto.foto,
+        delito: dto.delito,
+      );
 
   String _buildSearchKey(SearchFilters filters) {
     return [
@@ -196,10 +207,8 @@ class CriminalRepositoryImpl implements CriminalRepository {
       filters.size,
     );
     if (cached.isEmpty) {
-      return Left(
-        const ApiException.network(
-          message: 'Sin conexión y sin datos en caché.',
-        ),
+      return const Left(
+        ApiException.network(message: 'Sin conexión y sin datos en caché.'),
       );
     }
     return Right(
@@ -229,7 +238,7 @@ class CriminalRepositoryImpl implements CriminalRepository {
             ..montoRecompensa = c.montoRecompensa
             ..montoRecompensaSpace = c.montoRecompensaSpace
             ..fotoBase64 = c.foto
-            ..delitos = c.delitos
+            ..delitos = c.allDelitos
             ..departamento = c.departamento
             ..provincia = c.provincia
             ..cachedAt = DateTime.now()
@@ -242,6 +251,7 @@ class CriminalRepositoryImpl implements CriminalRepository {
   CriminalSummary _favoriteToEntity(FavoriteSchema s) => CriminalSummary(
         idRequisitoriado: s.idRequisitoriado,
         hashRequisitoriado: s.hash,
+        nombreCompleto: '${s.apellidoPaterno} ${s.apellidoMaterno} ${s.nombres}',
         apellidoPaterno: s.apellidoPaterno,
         apellidoMaterno: s.apellidoMaterno,
         nombres: s.nombres,
@@ -257,6 +267,7 @@ class CriminalRepositoryImpl implements CriminalRepository {
   CriminalSummary _cachedToEntity(CachedCriminalSchema s) => CriminalSummary(
         idRequisitoriado: s.idRequisitoriado,
         hashRequisitoriado: s.hash,
+        nombreCompleto: '${s.apellidoPaterno} ${s.apellidoMaterno} ${s.nombres}',
         apellidoPaterno: s.apellidoPaterno,
         apellidoMaterno: s.apellidoMaterno,
         nombres: s.nombres,

@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../constants/app_constants.dart';
@@ -29,6 +33,19 @@ Dio dioClient(DioClientRef ref) {
     ),
   );
 
+  // Android's BoringSSL rejects the MININTER server's incomplete cert chain.
+  // Bypass certificate validation in debug builds only.
+  if (!kIsWeb) {
+    (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+      final client = HttpClient();
+      client.badCertificateCallback = (cert, host, port) {
+        debugPrint('[SSL] Bad cert for $host:$port — ${cert.subject}');
+        return kDebugMode; // allow in debug, reject in release
+      };
+      return client;
+    };
+  }
+
   dio.interceptors.addAll([
     _RetryInterceptor(dio),
     PrettyDioLogger(
@@ -56,6 +73,21 @@ class _RetryInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
+    // Log the real underlying error for debugging
+    final cause = err.error;
+    if (cause != null) {
+      debugPrint('[DIO] Underlying error type: ${cause.runtimeType}');
+      debugPrint('[DIO] Underlying error: $cause');
+      if (cause is SocketException) {
+        debugPrint('[DIO] SocketException address: ${cause.address}');
+        debugPrint('[DIO] SocketException osError: ${cause.osError}');
+      } else if (cause is HandshakeException) {
+        debugPrint('[DIO] HandshakeException message: ${cause.message}');
+      } else if (cause is TlsException) {
+        debugPrint('[DIO] TlsException message: ${cause.message}');
+      }
+    }
+
     final extra = err.requestOptions.extra;
     final retryCount = (extra['retryCount'] as int?) ?? 0;
 

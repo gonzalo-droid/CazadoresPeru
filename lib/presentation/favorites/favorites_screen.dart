@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/router/app_router.dart';
+import '../../domain/entities/criminal_summary.dart';
 import '../shared/widgets/criminal_photo.dart';
 import '../shared/widgets/reward_badge.dart';
 import 'favorites_provider.dart';
@@ -98,11 +99,11 @@ class FavoritesScreen extends ConsumerWidget {
                     size: 52,
                   ),
                   title: Text(
-                    '${criminal.apellidoPaterno} ${criminal.apellidoMaterno}',
+                    criminal.displayName,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                   subtitle: Text(
-                    '${criminal.departamento} — ${criminal.delitos.isNotEmpty ? criminal.delitos.first : ""}',
+                    '${criminal.departamento} — ${criminal.allDelitos.isNotEmpty ? criminal.allDelitos.first : ""}',
                     style: const TextStyle(fontSize: 12),
                     overflow: TextOverflow.ellipsis,
                   ),

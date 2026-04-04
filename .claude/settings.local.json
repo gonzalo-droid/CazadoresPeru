@@ -35,7 +35,11 @@
       "Bash(grep -oE 'this\\\\.http\\\\.[a-z]+\\\\\\(`[^`]{0,150}`')",
       "Bash(grep -oE 'url\\\\}/[a-zA-Z/\\\\$\\\\{._]+[^`\"]{0,50}')",
       "Bash(python3 -c ':*)",
-      "Bash(wait)"
+      "Bash(wait)",
+      "Bash(flutter build:*)",
+      "Bash(ls /Users/gonzalo/DocsNeko/claude-code/cazadores-x-peru/android/app/build.gradle*)",
+      "Bash(ls /Users/gonzalo/DocsNeko/claude-code/cazadores-x-peru/android/build.gradle*)",
+      "Bash(flutter doctor:*)"
     ]
   }
 }

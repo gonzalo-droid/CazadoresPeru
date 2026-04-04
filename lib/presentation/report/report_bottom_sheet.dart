@@ -32,11 +32,7 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final fullName = Formatters.formatFullName(
-      apellidoPaterno: widget.criminal.apellidoPaterno,
-      apellidoMaterno: widget.criminal.apellidoMaterno,
-      nombres: widget.criminal.nombres,
-    );
+    final fullName = widget.criminal.displayName;
 
     // Redirect to official channel (no backend)
     final body = Uri.encodeComponent(

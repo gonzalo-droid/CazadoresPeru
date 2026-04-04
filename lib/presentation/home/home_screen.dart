@@ -11,6 +11,7 @@ import '../../core/utils/formatters.dart';
 import '../shared/widgets/criminal_photo.dart';
 import '../shared/widgets/disclaimer_banner.dart';
 import '../shared/widgets/reward_badge.dart';
+import '../../domain/entities/criminal_summary.dart';
 import 'home_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -345,7 +346,7 @@ class _TopWantedCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                '${criminal.apellidoPaterno} ${criminal.apellidoMaterno}',
+                criminal.displayName,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,

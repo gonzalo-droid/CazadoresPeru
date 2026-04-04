@@ -23,8 +23,7 @@ class ApiService {
   }
 
   Future<List<DepartamentoDto>> getDepartamentos() async {
-    final response =
-        await _dio.get<List<dynamic>>('/ubigeo/departamentos');
+    final response = await _dio.get<List<dynamic>>('/ubigeo/departamentos');
     return (response.data as List)
         .map((e) => DepartamentoDto.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -38,20 +37,36 @@ class ApiService {
         .toList();
   }
 
+  /// Búsqueda paginada de requisitoriados.
+  /// Endpoint real: POST /requisitoriados/search/pageandfilter
   Future<SearchResponseDto> buscarRequisitoriados(
     SearchRequestDto request,
   ) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/requisitoriados/buscar',
+      '/requisitoriados/pageandfilter',
       data: request.toJson(),
     );
     return SearchResponseDto.fromJson(response.data!);
   }
 
-  Future<CriminalSummaryDto> getRequisitoriadoByHash(String hash) async {
+  /// Top 5 más buscados por recompensa.
+  /// Endpoint real: POST /requisitoriados/top5
+  Future<List<CriminalSummaryDto>> getTop5() async {
+    final response = await _dio.post<List<dynamic>>(
+      '/requisitoriados/top5',
+      data: <String, dynamic>{},
+    );
+    return (response.data as List)
+        .map((e) => CriminalSummaryDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Detalle completo de un criminal por hash.
+  /// Endpoint real: GET /requisitoriados/{hash}
+  Future<CriminalDetailDto> getRequisitoriadoByHash(String hash) async {
     final response =
         await _dio.get<Map<String, dynamic>>('/requisitoriados/$hash');
-    return CriminalSummaryDto.fromJson(response.data!);
+    return CriminalDetailDto.fromJson(response.data!);
   }
 }
 

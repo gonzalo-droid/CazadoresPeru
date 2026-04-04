@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/repositories/criminal_repository_impl.dart';
 import '../../domain/entities/criminal_summary.dart';
 import '../../domain/entities/search_filters.dart';
 import '../../domain/usecases/search_criminals_usecase.dart';
@@ -8,19 +9,8 @@ part 'home_provider.g.dart';
 
 @riverpod
 Future<List<CriminalSummary>> topWanted(TopWantedRef ref) async {
-  final useCase = ref.watch(searchCriminalsUseCaseProvider);
-  final result = await useCase(
-    const SearchFilters(
-      page: 1,
-      size: 5,
-      sortBy: 'montoRecompensa',
-      direction: 'desc',
-    ),
-  );
-  return result.fold(
-    (_) => [],
-    (paginated) => paginated.items,
-  );
+  final repo = ref.watch(criminalRepositoryProvider) as CriminalRepositoryImpl;
+  return repo.getTop5();
 }
 
 @riverpod

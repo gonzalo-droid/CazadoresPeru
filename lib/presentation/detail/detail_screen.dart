@@ -70,13 +70,9 @@ class _DetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nivel = PeligrosidadHelper.calcular(criminal.delitos);
+    final nivel = PeligrosidadHelper.calcular(criminal.allDelitos);
     final peligroColor = PeligrosidadHelper.color(nivel);
-    final fullName = Formatters.formatFullName(
-      apellidoPaterno: criminal.apellidoPaterno,
-      apellidoMaterno: criminal.apellidoMaterno,
-      nombres: criminal.nombres,
-    );
+    final fullName = criminal.displayName;
 
     return CustomScrollView(
       slivers: [
@@ -175,7 +171,7 @@ class _DetailBody extends StatelessWidget {
                 const Gap(16),
 
                 // Delitos
-                _DelitosSection(delitos: criminal.delitos),
+                _DelitosSection(delitos: criminal.allDelitos),
                 const Gap(16),
 
                 // How to report

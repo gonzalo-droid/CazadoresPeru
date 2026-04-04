@@ -201,11 +201,11 @@ class _HeatMapScreenState extends ConsumerState<HeatMapScreen> {
                   return ListTile(
                     leading: CriminalPhoto(base64Photo: c.foto, size: 48),
                     title: Text(
-                      '${c.apellidoPaterno} ${c.apellidoMaterno}',
+                      c.displayName,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                     subtitle: Text(
-                      c.delitos.isNotEmpty ? c.delitos.first : '',
+                      c.allDelitos.isNotEmpty ? c.allDelitos.first : '',
                       style: const TextStyle(fontSize: 12),
                     ),
                     trailing: RewardBadge(amount: c.montoRecompensa),
