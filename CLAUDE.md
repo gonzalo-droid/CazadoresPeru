@@ -77,8 +77,10 @@ GoRouter via `appRouterProvider`. Routes defined in `AppRoutes` constants. Detai
 
 ## Known issues / quirks
 
-- **Android SSL**: The MININTER server has an incomplete TLS certificate chain that Android's BoringSSL rejects. `dio_client.dart` installs a custom `HttpClient` with `badCertificateCallback` that returns `true` in `kDebugMode` only.
+- **Android SSL (BLOCKER para release)**: El servidor de MININTER tiene cadena TLS incompleta. Android (BoringSSL) la rechaza en release. `dio_client.dart` usa `badCertificateCallback` que retorna `true` solo en `kDebugMode` — en release todas las llamadas a la API fallan. **Solución pendiente**: implementar certificate pinning con el paquete `crypto` (aún no agregado a `pubspec.yaml`). Pasos: obtener SHA-256 del certificado hoja con `openssl s_client -connect sispasvehapp.mininter.gob.pe:443 | openssl x509 -noout -fingerprint -sha256`, luego en `badCertificateCallback` comparar `sha256.convert(cert.der)` contra el hash pinado. Considerar pinear 2 hashes (actual + backup) para rotación sin downtime. iOS es más permisivo y generalmente acepta la cadena incompleta.
+- **Android storage permissions**: `READ_EXTERNAL_STORAGE` y `WRITE_EXTERNAL_STORAGE` declarados en `AndroidManifest.xml`. En Android 10+ son obsoletos (scoped storage). Play Store puede pedir justificación o rechazar si no se usan activamente. Revisar si la app los necesita realmente.
+- **network_security_config.xml**: Incluye `<certificates src="user"/>` en `base-config`. Android 7+ ignora certificados de usuario en release por defecto, pero es configuración permisiva innecesaria si no se usa para testing con proxies.
 - **isar_flutter_libs namespace**: isar 3.1.0+1 doesn't declare an Android `namespace`. Patched in `android/build.gradle.kts` with an `afterEvaluate` block that injects the namespace from `AndroidManifest.xml`.
 - **`retrofit_generator`**: Broken with Dart 3.11. Do not add it back. Use plain Dio calls in `ApiService`.
 - **`riverpod_lint` / `custom_lint`**: Incompatible with `isar_generator` due to conflicting `analyzer` version constraints. Do not add them back.
-- **Google Maps API key**: Placeholder `YOUR_GOOGLE_MAPS_API_KEY` in both `AndroidManifest.xml` and `ios/Runner/AppDelegate.swift`. The map screen will not render until replaced with a real key.
+- **Google Maps API key**: Claves reales ya configuradas en `AndroidManifest.xml` y `ios/Runner/AppDelegate.swift`. No commitear estas claves en repositorios públicos — considerar moverlas a variables de entorno o archivos excluidos del repo.

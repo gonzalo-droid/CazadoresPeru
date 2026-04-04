@@ -9,7 +9,8 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     // TODO: Replace with your Google Maps API key
-    GMSServices.provideAPIKey("YOUR_GOOGLE_MAPS_API_KEY")
+    let mapsKey = Bundle.main.object(forInfoDictionaryKey: "MAPS_API_KEY") as? String ?? ""
+    GMSServices.provideAPIKey(mapsKey)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
