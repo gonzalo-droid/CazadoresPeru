@@ -275,7 +275,7 @@ class _StatCard extends StatelessWidget {
 class _TopWantedSection extends StatelessWidget {
   const _TopWantedSection({required this.topAsync});
 
-  final AsyncValue<dynamic> topAsync;
+  final AsyncValue<List<CriminalSummary>> topAsync;
 
   @override
   Widget build(BuildContext context) {
@@ -284,8 +284,7 @@ class _TopWantedSection extends StatelessWidget {
       child: topAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const Center(child: Text('Error cargando datos')),
-        data: (items) {
-          final criminals = items as List;
+        data: (criminals) {
           if (criminals.isEmpty) {
             return const Center(child: Text('Sin datos disponibles'));
           }
@@ -294,10 +293,7 @@ class _TopWantedSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: criminals.length,
             separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemBuilder: (context, i) {
-              final c = criminals[i];
-              return _TopWantedCard(criminal: c);
-            },
+            itemBuilder: (context, i) => _TopWantedCard(criminal: criminals[i]),
           );
         },
       ),
@@ -308,7 +304,7 @@ class _TopWantedSection extends StatelessWidget {
 class _TopWantedCard extends StatelessWidget {
   const _TopWantedCard({required this.criminal});
 
-  final dynamic criminal;
+  final CriminalSummary criminal;
 
   @override
   Widget build(BuildContext context) {

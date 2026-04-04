@@ -43,10 +43,9 @@ class CriminalRepositoryImpl implements CriminalRepository {
     }
 
     try {
-      // Spring Boot es 0-indexed, nuestra UI usa 1-indexed → restamos 1
       final request = SearchRequestDto(
         pageInfo: PageInfoDto(
-          page: filters.page - 1,
+          page: filters.page,
           size: filters.size,
           sortBy: filters.sortBy,
           direction: filters.direction,
@@ -78,7 +77,7 @@ class CriminalRepositoryImpl implements CriminalRepository {
           items: items,
           totalElements: response.totalElements,
           totalPages: response.totalPages,
-          currentPage: response.number + 1, // normalizar a 1-indexed
+          currentPage: response.number,
           isLast: response.last,
         ),
       );
