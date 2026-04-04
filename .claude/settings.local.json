@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter create:*)",
+      "Bash(export PATH=\"$PATH:$HOME/flutter/bin\")",
+      "Read(//Users/gonzalo/development/flutter/bin/**)",
+      "Read(//usr/local/**)",
+      "Bash(export PATH=\"$PATH:/Users/gonzalo/flutter/bin:/opt/homebrew/bin:/usr/local/bin\")",
+      "Bash(flutter --version)",
+      "Bash(export PATH=\"$PATH:/Users/gonzalo/DocsNeko/claude-code/flutter/bin\")",
+      "Bash(flutter devices:*)",
+      "Bash(flutter emulators:*)",
+      "Bash(flutter pub:*)",
+      "Bash(dart run:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter run:*)",
+      "Bash(curl -s -X POST https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/buscar -H 'Content-Type: application/json; charset=UTF-8' -H 'Accept: application/json, text/plain, */*' -H 'Origin: https://recompensas.pe' -H 'Referer: https://recompensas.pe/' -H 'User-Agent: Mozilla/5.0 \\(iPhone; CPU iPhone OS 17_0 like Mac OS X\\) AppleWebKit/605.1.15' -d '{:*)",
+      "Bash(curl -sv -X POST https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/buscar -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"pageInfo\":{\"page\":1,\"size\":2,\"sortBy\":\"id\",\"direction\":\"desc\"},\"search\":{\"tipoFilter\":\"F\"}}')",
+      "Bash(curl -s -X OPTIONS https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/buscar -H 'Origin: https://recompensas.pe' -v)",
+      "Bash(curl -s 'https://sispasvehapp.mininter.gob.pe/api-recompensas/')",
+      "Bash(curl -s 'https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/buscar?page=1&size=2&sortBy=id&direction=desc&tipoFilter=F')",
+      "Bash(curl -s -X GET https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/buscar -H 'Content-Type: application/json' -d '{\"pageInfo\":{\"page\":1,\"size\":2,\"sortBy\":\"id\",\"direction\":\"desc\"},\"search\":{\"tipoFilter\":\"F\"}}')",
+      "Bash(curl -s 'https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/buscar?page=0&size=2&sort=id,desc')",
+      "Bash(curl -s -G https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/buscar --data-urlencode page=1 --data-urlencode size=2 --data-urlencode tipoFilter=F)",
+      "Bash(curl -s 'https://recompensas.pe')",
+      "Bash(curl -s 'https://recompensas.pe/main.e6fc049325c2675efc43.js')",
+      "Bash(grep -oE 'requisitoriados[^\"]{0,100}')",
+      "Bash(grep -oE '\"\\(GET|POST|PUT|PATCH\\)[^\"]{0,5}\"')",
+      "Bash(grep -oE 'api-recompensas[^\"]{0,150}')",
+      "Bash(curl -s -X POST https://sispasvehapp.mininter.gob.pe/api-recompensas/requisitoriados/pageandfilter -H 'Content-Type: application/json' -H 'Accept: application/json' -d '{\"pageInfo\":{\"page\":1,\"size\":2,\"sortBy\":\"id\",\"direction\":\"desc\"},\"search\":{\"tipoFilter\":\"F\"}}')",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \" import json,sys data = json.load\\(sys.stdin\\) if isinstance\\(data, list\\): item = data[0] else: item = data keys = list\\(item.keys\\(\\)\\) print\\('=== DETAIL KEYS ==='\\) print\\(keys\\) print\\(\\) print\\(json.dumps\\({k:v for k,v in item.items\\(\\) if k != 'foto'}, indent=2, ensure_ascii=False\\)\\) \")",
+      "Bash(grep -oE 'requisitoriados/[a-z/\\\\$\\\\{A-Z._]+[^\"]{0,80}')",
+      "Bash(grep -oE 'http\\\\.\\(get|post|put\\)\\\\\\([^\\)]{0,200}requisitoriados[^\\)]{0,200}\\\\\\)')",
+      "Bash(grep -oE 'this\\\\.http\\\\.[a-z]+\\\\\\(`[^`]{0,150}`')",
+      "Bash(grep -oE 'url\\\\}/[a-zA-Z/\\\\$\\\\{._]+[^`\"]{0,50}')",
+      "Bash(python3 -c ':*)",
+      "Bash(wait)"
+    ]
+  }
+}

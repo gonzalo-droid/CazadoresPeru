@@ -1,0 +1,22 @@
+[
+  { "idDelito": 82, "descripcion": "ABORTO" },
+  { "idDelito": 80, "descripcion": "ABUSO DE AUTORIDAD" },
+  { "idDelito": 1, "descripcion": "HOMICIDIO CALIFICADO - ASESINATO" },
+  { "idDelito": 2, "descripcion": "SICARIATO" },
+  { "idDelito": 3, "descripcion": "TERRORISMO" },
+  { "idDelito": 4, "descripcion": "FEMINICIDIO" },
+  { "idDelito": 5, "descripcion": "ROBO AGRAVADO" },
+  { "idDelito": 6, "descripcion": "SECUESTRO" },
+  { "idDelito": 7, "descripcion": "EXTORSIÓN" },
+  { "idDelito": 8, "descripcion": "TRÁFICO ILÍCITO DE DROGAS" },
+  { "idDelito": 9, "descripcion": "VIOLACIÓN SEXUAL" },
+  { "idDelito": 10, "descripcion": "TRATA DE PERSONAS" },
+  { "idDelito": 11, "descripcion": "LAVADO DE ACTIVOS" },
+  { "idDelito": 12, "descripcion": "ESTAFA" },
+  { "idDelito": 13, "descripcion": "CORRUPCIÓN DE FUNCIONARIOS" },
+  { "idDelito": 14, "descripcion": "COLUSIÓN" },
+  { "idDelito": 15, "descripcion": "PECULADO" },
+  { "idDelito": 16, "descripcion": "LESIONES GRAVES" },
+  { "idDelito": 17, "descripcion": "DELITOS INFORMÁTICOS" },
+  { "idDelito": 18, "descripcion": "HURTO AGRAVADO" }
+]

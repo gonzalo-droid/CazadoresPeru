@@ -1,0 +1,96 @@
+name: cazadores_peru
+description: App oficial del Programa de Recompensas del Ministerio del Interior del Perú.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  hooks_riverpod: ^2.5.1
+  flutter_hooks: ^0.20.5
+
+  # Code generation
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0
+
+  # Networking
+  dio: ^5.4.3
+  pretty_dio_logger: ^1.4.0
+
+  # Local DB / Cache
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.1.3
+
+  # Navigation
+  go_router: ^13.2.4
+
+  # Persistence
+  shared_preferences: ^2.2.3
+
+  # Maps
+  google_maps_flutter: ^2.6.1
+
+  # UI / UX
+  shimmer: ^3.0.0
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.10+1
+  lottie: ^3.1.2
+  gap: ^3.0.1
+  animate_do: ^3.3.4
+  flutter_staggered_animations: ^1.1.1
+
+  # Sharing / Screenshot
+  screenshot: ^3.0.0
+  share_plus: ^9.0.0
+
+  # Media
+  image_picker: ^1.1.1
+  camera: ^0.11.0+1
+
+  # Utilities
+  url_launcher: ^6.3.0
+  permission_handler: ^11.3.1
+  intl: ^0.19.0
+  equatable: ^2.0.5
+  dartz: ^0.10.1
+  connectivity_plus: ^6.0.3
+  flutter_local_notifications: ^17.2.1+2
+  package_info_plus: ^8.0.2
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Code generation
+  build_runner: ^2.4.11
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
+  riverpod_generator: ^2.4.0
+  isar_generator: ^3.1.0+1
+
+  # Linting
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/data/departamentos.json
+    - assets/data/provincias.json
+    - assets/data/delitos.json
+
+  # fonts:
+  #   - family: Montserrat
+  #     fonts:
+  #       - asset: assets/fonts/Montserrat-Regular.ttf
