@@ -87,9 +87,34 @@ class CriminalCard extends ConsumerWidget {
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
+
                         ),
                       ],
                     ),
+                    
+                    // id Requisitoriado
+Row(
+                      children: [
+                        const Icon(
+                          Icons.account_box,
+                          size: 12,
+                          color: AppColors.textSecondaryLight,
+                        ),
+                        const SizedBox(width: 3),
+                        Expanded(
+                          child: Text(
+                            'ID: ${criminal.idRequisitoriado}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondaryLight,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          
+                        ),
+                      ],
+                    ),
+
                     const SizedBox(height: 8),
 
                     // Chips row
@@ -97,7 +122,7 @@ class CriminalCard extends ConsumerWidget {
                       spacing: 6,
                       runSpacing: 4,
                       children: [
-                        _PeligrosidadChip(nivel: nivel),
+                        // _PeligrosidadChip(nivel: nivel),
                         if (criminal.allDelitos.isNotEmpty)
                           _DelitoChip(
                             label: Formatters.firstDelito(criminal.allDelitos),

@@ -203,15 +203,15 @@ class _SearchFiltersSheetState extends ConsumerState<SearchFiltersSheet> {
                   const Gap(8),
                   SegmentedButton<String?>(
                     segments: const [
-                      ButtonSegment(value: null, label: Text('Todos')),
+                      ButtonSegment(value: null, label: Text('Todos',style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700))),
                       ButtonSegment(
                         value: 'MASCULINO',
-                        label: Text('Masculino'),
+                        label: Text('Masculino',style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
                         icon: Icon(Icons.male),
                       ),
                       ButtonSegment(
                         value: 'FEMENINO',
-                        label: Text('Femenino'),
+                        label: Text('Femenino',style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
                         icon: Icon(Icons.female),
                       ),
                     ],
