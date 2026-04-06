@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/utils/base64_utils.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/peligrosidad.dart';
 import '../../../data/repositories/criminal_repository_impl.dart';
 import '../../../domain/entities/criminal_summary.dart';
-import '../../shared/widgets/criminal_photo.dart';
 import '../../shared/widgets/reward_badge.dart';
 import '../search_provider.dart';
 
@@ -29,28 +29,29 @@ class CriminalCard extends ConsumerWidget {
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
         onTap: () => context.push(
           '${AppRoutes.detail}/${criminal.hashRequisitoriado}',
           extra: {'heroTag': tag},
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
+        child: IntrinsicHeight(
           child: Row(
-            children: [
-              // Photo
-              Hero(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Photo — full height, ~28% width
+            SizedBox(
+              width: 100,
+              child: Hero(
                 tag: tag,
-                child: CriminalPhoto(
-                  base64Photo: criminal.foto,
-                  size: 68,
-                ),
+                child: _CardPhoto(base64Photo: criminal.foto),
               ),
-              const SizedBox(width: 14),
+            ),
 
-              // Content
-              Expanded(
+            // Content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -78,8 +79,8 @@ class CriminalCard extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             criminal.departamento.isNotEmpty
-                        ? '${criminal.departamento} — ${criminal.provincia}'
-                        : 'Ubicación no disponible',
+                                ? '${criminal.departamento} — ${criminal.provincia}'
+                                : 'Ubicación no disponible',
                             style: const TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondaryLight,
@@ -96,10 +97,7 @@ class CriminalCard extends ConsumerWidget {
                       spacing: 6,
                       runSpacing: 4,
                       children: [
-                        // Peligrosidad chip
                         _PeligrosidadChip(nivel: nivel),
-
-                        // Delito chip
                         if (criminal.allDelitos.isNotEmpty)
                           _DelitoChip(
                             label: Formatters.firstDelito(criminal.allDelitos),
@@ -119,9 +117,32 @@ class CriminalCard extends ConsumerWidget {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CardPhoto extends StatelessWidget {
+  const _CardPhoto({required this.base64Photo});
+
+  final String? base64Photo;
+
+  @override
+  Widget build(BuildContext context) {
+    final bytes = Base64Utils.decodePhoto(base64Photo);
+    if (bytes != null) {
+      return SizedBox.expand(
+        child: Image.memory(bytes, fit: BoxFit.cover),
+      );
+    }
+    return ColoredBox(
+      color: AppColors.primaryDark,
+      child: const Center(
+        child: Icon(Icons.person, size: 40, color: Colors.white24),
       ),
     );
   }

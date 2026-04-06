@@ -116,7 +116,7 @@ class HomeScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Más Buscados',
+                          'Los más Buscados',
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         TextButton(
@@ -370,9 +370,7 @@ class _TopWantedCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    RewardBadge(amount: criminal.montoRecompensa),
-                    const SizedBox(height: 6),
+                  children: [                
                     Text(
                       criminal.displayName,
                       style: const TextStyle(
@@ -390,6 +388,8 @@ class _TopWantedCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: 6),
+                    RewardBadge(amount: criminal.montoRecompensa),
                   ],
                 ),
               ),
