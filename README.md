@@ -192,7 +192,7 @@ Ver [ARCHITECTURE.md](./ARCHITECTURE.md) para una descripción detallada de las 
 
 Esta aplicación consume datos **públicos** del Ministerio del Interior del Perú. No almacena información personal de los usuarios. Las fotos e información de requisitoriados son de dominio público conforme al Programa de Recompensas del Estado Peruano.
 
-Esta es una herramienta informativa. Para realizar denuncias, utilizar el canal oficial: **línea 1818** (gratuita, 24/7).
+Esta es una herramienta informativa. Para realizar denuncias, utilizar el canal oficial: **línea 0-800-40-007** (gratuita, 24/7).
 
 ---
 

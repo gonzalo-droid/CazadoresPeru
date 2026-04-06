@@ -7,8 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/router/app_router.dart';
+import '../../core/utils/base64_utils.dart';
 import '../../core/utils/formatters.dart';
-import '../shared/widgets/criminal_photo.dart';
 import '../shared/widgets/disclaimer_banner.dart';
 import '../shared/widgets/reward_badge.dart';
 import '../../domain/entities/criminal_summary.dart';
@@ -152,13 +152,13 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
 
-      // FAB — Report Line 1818
+      // FAB — Report Line ${AppConstants.reportPhone}
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _callReportLine,
         backgroundColor: AppColors.rewardGreen,
         icon: const Icon(Icons.phone, color: Colors.white),
         label: const Text(
-          'Denunciar — 1818',
+          'Denunciar',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w800,
@@ -189,6 +189,20 @@ class _StatsSection extends StatelessWidget {
               icon: Icons.person_search,
               color: AppColors.primary,
             ),
+          const SizedBox(width: 12),
+            _StatCard(
+              label: 'Recompensa máxima',
+              value: '---',
+              icon: Icons.monetization_on,
+              color: AppColors.rewardGreen,
+            ),
+            const SizedBox(width: 12),
+            _StatCard(
+              label: 'Llame al',
+              value: '${AppConstants.reportPhone}',
+              icon: Icons.phone,
+              color: AppColors.accent,
+            ),
           ],
           error: (_, __) => [],
           data: (stats) => [
@@ -208,7 +222,7 @@ class _StatsSection extends StatelessWidget {
             const SizedBox(width: 12),
             _StatCard(
               label: 'Llame al',
-              value: '1818',
+              value: '${AppConstants.reportPhone}',
               icon: Icons.phone,
               color: AppColors.accent,
             ),
@@ -308,59 +322,79 @@ class _TopWantedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bytes = Base64Utils.decodePhoto(criminal.foto);
+
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: () => context.push(
         '${AppRoutes.detail}/${criminal.hashRequisitoriado}',
       ),
-      child: Container(
-        width: 140,
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardTheme.color,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Photo
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: CriminalPhoto(
-                base64Photo: criminal.foto,
-                size: 80,
-              ),
-            ),
-
-            // Name
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                criminal.displayName,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: SizedBox(
+          width: 148,
+          height: 220,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Background photo
+              if (bytes != null)
+                Image.memory(bytes, fit: BoxFit.cover)
+              else
+                Container(
+                  color: AppColors.primaryDark,
+                  child: const Icon(Icons.person, size: 64, color: Colors.white24),
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+
+              // Gradient overlay — top subtle, bottom dark
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.0, 0.45, 1.0],
+                    colors: [
+                      Colors.black.withOpacity(0.0),
+                      Colors.black.withOpacity(0.15),
+                      Colors.black.withOpacity(0.82),
+                    ],
+                  ),
+                ),
               ),
-            ),
 
-            const Spacer(),
-
-            // Reward
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 12),
-              child: RewardBadge(amount: criminal.montoRecompensa),
-            ),
-          ],
+              // Content pinned to bottom
+              Positioned(
+                left: 10,
+                right: 10,
+                bottom: 12,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RewardBadge(amount: criminal.montoRecompensa),
+                    const SizedBox(height: 6),
+                    Text(
+                      criminal.displayName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                        height: 1.3,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -393,48 +427,49 @@ class _QuickAccessSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 88,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _links.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, i) {
-          final link = _links[i];
-          return InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () async {
-              final uri = Uri.parse(link.url);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
-            child: Container(
-              width: 100,
-              decoration: BoxDecoration(
-                color: link.color.withOpacity(0.1),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (int i = 0; i < _links.length; i++) ...[
+            if (i > 0) const SizedBox(width: 12),
+            Expanded(
+              child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: link.color.withOpacity(0.2)),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(link.icon, color: link.color, size: 28),
-                  const Gap(6),
-                  Text(
-                    link.label,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: link.color,
-                    ),
+                onTap: () async {
+                  final uri = Uri.parse(_links[i].url);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  }
+                },
+                child: Container(
+                  height: 88,
+                  decoration: BoxDecoration(
+                    color: _links[i].color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: _links[i].color.withOpacity(0.2)),
                   ),
-                ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(_links[i].icon, color: _links[i].color, size: 28),
+                      const Gap(6),
+                      Text(
+                        _links[i].label,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: _links[i].color,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          );
-        },
+          ],
+        ],
       ),
     );
   }

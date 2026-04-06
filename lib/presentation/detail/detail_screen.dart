@@ -99,7 +99,7 @@ class _DetailBody extends StatelessWidget {
                 Share.share(
                   'Persona requisitoriada: $fullName\n'
                   'Recompensa: ${Formatters.formatReward(criminal.montoRecompensa)}\n'
-                  'Si tiene información, llame al 1818.\n'
+                  'Si tiene información, llame al ${AppConstants.reportPhone}.\n'
                   'cazadores://criminal/${criminal.hashRequisitoriado}',
                 );
               },
@@ -410,7 +410,7 @@ class _ReportSection extends StatelessWidget {
                 onPressed: onCall,
                 icon: const Icon(Icons.phone, color: AppColors.rewardGreen),
                 label: const Text(
-                  'Llamar al 1818',
+                  'Llamar al 0-800-40-007',
                   style: TextStyle(
                     color: AppColors.rewardGreen,
                     fontWeight: FontWeight.w800,

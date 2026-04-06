@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_constants.dart';
+
 
 class DisclaimerBanner extends StatelessWidget {
   const DisclaimerBanner({super.key, this.compact = false});
@@ -35,7 +37,7 @@ class DisclaimerBanner extends StatelessWidget {
           Expanded(
             child: Text(
               'Información oficial del Estado Peruano — Ministerio del Interior. '
-              'No realices capturas por cuenta propia. Llama al 1818.',
+              'No realices capturas por cuenta propia. Llama al ${AppConstants.reportPhone}.',
               style: TextStyle(
                 fontSize: 11,
                 color: AppColors.primary,

@@ -19,11 +19,14 @@ class MainScaffold extends StatelessWidget {
       selectedIcon: Icon(Icons.search),
       label: 'Buscar',
     ),
+    
+    /* TODO: Actualizar cuando busque un fin para ello
     NavigationDestination(
       icon: Icon(Icons.map_outlined),
       selectedIcon: Icon(Icons.map),
       label: 'Mapa',
     ),
+    */
     NavigationDestination(
       icon: Icon(Icons.bookmark_outline),
       selectedIcon: Icon(Icons.bookmark),

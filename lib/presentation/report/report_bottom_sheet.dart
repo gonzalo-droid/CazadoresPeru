@@ -176,7 +176,7 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
                           color: AppColors.rewardGreen,
                         ),
                         label: const Text(
-                          'Llamar al 1818 ahora',
+                          'Llamar al 0-800-40-007 ahora',
                           style: TextStyle(color: AppColors.rewardGreen),
                         ),
                         style: OutlinedButton.styleFrom(

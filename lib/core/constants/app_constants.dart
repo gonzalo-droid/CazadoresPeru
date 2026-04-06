@@ -6,12 +6,12 @@ class AppConstants {
       'https://sispasvehapp.mininter.gob.pe/api-recompensas';
 
   // Emergency contact
-  static const String reportPhone = '1818';
-  static const String reportPhoneUri = 'tel:1818';
+  static const String reportPhone = '0-800-40-007';
+  static const String reportPhoneUri = 'tel:080040007';
 
   // Social / official links
   static const String mininterUrl = 'https://www.mininter.gob.pe';
-  static const String pnpUrl = 'https://www.pnp.gob.pe';
+  static const String pnpUrl = 'https://www.gob.pe/pnp';
   static const String recompensasUrl = 'https://recompensas.pe';
 
   // Local storage keys
