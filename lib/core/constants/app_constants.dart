@@ -4,7 +4,6 @@ class AppConstants {
   // API
   static const String baseUrl =
       'https://sispasvehapp.mininter.gob.pe/api-recompensas';
-
   // Emergency contact
   static const String reportPhone = '0-800-40-007';
   static const String reportPhoneUri = 'tel:080040007';

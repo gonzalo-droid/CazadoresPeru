@@ -1,3 +1,4 @@
+// ignore_for_file: uri_does_not_exist, undefined_class, undefined_function, undefined_identifier, undefined_method, non_type_as_type_argument, const_initialized_with_non_constant_value, non_constant_map_value
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';

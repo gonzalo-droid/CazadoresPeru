@@ -6,7 +6,7 @@ import '../../presentation/onboarding/onboarding_screen.dart';
 import '../../presentation/home/home_screen.dart';
 import '../../presentation/search/search_screen.dart';
 import '../../presentation/detail/detail_screen.dart';
-import '../../presentation/map/heat_map_screen.dart';
+// import '../../presentation/map/heat_map_screen.dart'; // Mapa deshabilitado
 import '../../presentation/favorites/favorites_screen.dart';
 import '../../presentation/profile/profile_screen.dart';
 import '../../presentation/shared/widgets/main_scaffold.dart';
@@ -37,11 +37,11 @@ GoRouter appRouter(AppRouterRef ref) {
             name: 'search',
             builder: (context, state) => const SearchScreen(),
           ),
-          GoRoute(
-            path: AppRoutes.map,
-            name: 'map',
-            builder: (context, state) => const HeatMapScreen(),
-          ),
+          // GoRoute(
+          //   path: AppRoutes.map,
+          //   name: 'map',
+          //   builder: (context, state) => const HeatMapScreen(),
+          // ),
           GoRoute(
             path: AppRoutes.favorites,
             name: 'favorites',

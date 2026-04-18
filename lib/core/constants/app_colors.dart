@@ -8,6 +8,7 @@ class AppColors {
   static const Color primaryDark = Color(0xFF990000);
   static const Color primaryLight = Color(0xFFFF3333);
   static const Color secondary = Color(0xFFFFD700);     // Dorado/recompensa
+  static const Color rewardGold = Color(0xFFFFC800);    // Dorado énfasis recompensas
   static const Color accent = Color(0xFF1E88E5);
 
   // Peligrosidad

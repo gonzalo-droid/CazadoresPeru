@@ -39,7 +39,19 @@
       "Bash(flutter build:*)",
       "Bash(ls /Users/gonzalo/DocsNeko/claude-code/cazadores-x-peru/android/app/build.gradle*)",
       "Bash(ls /Users/gonzalo/DocsNeko/claude-code/cazadores-x-peru/android/build.gradle*)",
-      "Bash(flutter doctor:*)"
+      "Bash(flutter doctor:*)",
+      "Bash(/Users/gonzalo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/scripts/start-server.sh *)",
+      "Bash(/Users/gonzalo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/start-server.sh *)",
+      "Bash(/Users/gonzalo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/stop-server.sh *)"
     ]
+  },
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": [
+        "@_davideast/stitch-mcp",
+        "proxy"
+      ]
+    }
   }
 }

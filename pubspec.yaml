@@ -36,8 +36,8 @@ dependencies:
   # Persistence
   shared_preferences: ^2.2.3
 
-  # Maps
-  google_maps_flutter: ^2.6.1
+  # Maps (deshabilitado — descomentar para reactivar la funcionalidad de mapa)
+  # google_maps_flutter: ^2.6.1
 
   # UI / UX
   shimmer: ^3.0.0

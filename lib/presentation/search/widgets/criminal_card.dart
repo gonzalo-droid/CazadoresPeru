@@ -6,9 +6,8 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/utils/base64_utils.dart';
 import '../../../core/utils/formatters.dart';
-import '../../../core/utils/peligrosidad.dart';
-import '../../../data/repositories/criminal_repository_impl.dart';
 import '../../../domain/entities/criminal_summary.dart';
+import '../../detail/detail_provider.dart';
 import '../../shared/widgets/reward_badge.dart';
 import '../search_provider.dart';
 
@@ -24,7 +23,6 @@ class CriminalCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final nivel = PeligrosidadHelper.calcular(criminal.allDelitos);
     final tag = heroTag ?? 'criminal_${criminal.hashRequisitoriado}';
 
     return Card(
@@ -173,39 +171,6 @@ class _CardPhoto extends StatelessWidget {
   }
 }
 
-class _PeligrosidadChip extends StatelessWidget {
-  const _PeligrosidadChip({required this.nivel});
-
-  final NivelPeligrosidad nivel;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = PeligrosidadHelper.color(nivel);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.4)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(PeligrosidadHelper.icon(nivel), size: 10, color: color),
-          const SizedBox(width: 3),
-          Text(
-            PeligrosidadHelper.label(nivel),
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _DelitoChip extends StatelessWidget {
   const _DelitoChip({required this.label});
@@ -217,7 +182,7 @@ class _DelitoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -241,21 +206,10 @@ class _FavoriteButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch real favorite state
-    final favStream = ref.watch(
-      StreamProvider(
-        (sRef) => sRef
-            .watch(criminalRepositoryProvider)
-            .watchFavorites()
-            .map(
-              (list) => list.any(
-                (c) => c.hashRequisitoriado == criminal.hashRequisitoriado,
-              ),
-            ),
-      ),
+    final isFavAsync = ref.watch(
+      isFavoriteDetailProvider(criminal.hashRequisitoriado),
     );
-
-    final isCurrentlyFav = favStream.valueOrNull ?? false;
+    final isCurrentlyFav = isFavAsync.valueOrNull ?? false;
 
     return IconButton(
       icon: Icon(

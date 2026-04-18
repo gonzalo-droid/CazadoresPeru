@@ -67,7 +67,7 @@ class _PhotoWidget extends StatelessWidget {
       decoration: BoxDecoration(
         shape: shape,
         borderRadius: shape == BoxShape.rectangle ? borderRadius : null,
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       child: Icon(
         Icons.person,

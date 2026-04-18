@@ -42,7 +42,7 @@ class MainScaffold extends StatelessWidget {
   static const _routes = [
     AppRoutes.home,
     AppRoutes.search,
-    AppRoutes.map,
+    // AppRoutes.map, // Mapa deshabilitado
     AppRoutes.favorites,
     AppRoutes.profile,
   ];

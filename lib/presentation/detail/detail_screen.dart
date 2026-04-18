@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/app_launcher.dart';
+import '../../core/utils/base64_utils.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/peligrosidad.dart';
 import '../../domain/entities/criminal_summary.dart';
 import '../report/report_bottom_sheet.dart';
-import '../shared/widgets/criminal_photo.dart';
+import '../shared/widgets/app_error_widget.dart';
 import '../shared/widgets/disclaimer_banner.dart';
 import '../shared/widgets/reward_badge.dart';
 import 'detail_provider.dart';
@@ -34,7 +35,7 @@ class DetailScreen extends ConsumerWidget {
     return Scaffold(
       body: detailAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, __) => _ErrorBody(error: e.toString()),
+        error: (e, __) => _ErrorBody(error: e, hash: hash, ref: ref),
         data: (criminal) => _DetailBody(
           criminal: criminal,
           heroTag: tag,
@@ -63,27 +64,21 @@ class _DetailBody extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback onToggleFavorite;
 
-  Future<void> _call1818() async {
-    final uri = Uri.parse(AppConstants.reportPhoneUri);
-    if (await canLaunchUrl(uri)) await launchUrl(uri);
-  }
-
   @override
   Widget build(BuildContext context) {
     final nivel = PeligrosidadHelper.calcular(criminal.allDelitos);
     final peligroColor = PeligrosidadHelper.color(nivel);
     final fullName = criminal.displayName;
+    final bytes = Base64Utils.decodePhoto(criminal.foto);
 
     return CustomScrollView(
       slivers: [
-        // AppBar with hero photo
         SliverAppBar(
-          expandedHeight: 280,
+          expandedHeight: 320,
           pinned: true,
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.primaryDark,
           leading: const BackButton(color: Colors.white),
           actions: [
-            // Favorite
             IconButton(
               icon: Icon(
                 isFavorite ? Icons.bookmark : Icons.bookmark_outline,
@@ -92,7 +87,6 @@ class _DetailBody extends StatelessWidget {
               onPressed: onToggleFavorite,
               tooltip: isFavorite ? 'Quitar guardado' : 'Guardar',
             ),
-            // Share
             IconButton(
               icon: const Icon(Icons.share, color: Colors.white),
               onPressed: () {
@@ -107,47 +101,11 @@ class _DetailBody extends StatelessWidget {
             ),
           ],
           flexibleSpace: FlexibleSpaceBar(
-            background: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Background gradient
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [AppColors.primaryDark, AppColors.primary],
-                    ),
-                  ),
-                ),
-                // Photo centered
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Gap(40),
-                      Hero(
-                        tag: heroTag,
-                        child: CriminalPhoto(
-                          base64Photo: criminal.foto,
-                          size: 120,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const Gap(12),
-                      Text(
-                        fullName,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            collapseMode: CollapseMode.pin,
+            background: _DetailHeader(
+              bytes: bytes,
+              heroTag: heroTag,
+              fullName: fullName,
             ),
           ),
         ),
@@ -158,27 +116,34 @@ class _DetailBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Reward card
-                RewardBadge(amount: criminal.montoRecompensa, large: true),
+                // Reward badge — prominent at top
+                Row(
+                  children: [
+                    RewardBadge(
+                      amount: criminal.montoRecompensa,
+                      large: true,
+                    ),
+                  ],
+                ),
                 const Gap(16),
 
-                // Peligrosidad card
+                // Danger level
                 _PeligrosidadCard(nivel: nivel, color: peligroColor),
                 const Gap(16),
 
-                // Info card
+                // Info
                 _InfoCard(criminal: criminal),
                 const Gap(16),
 
-                // Delitos
+                // Crimes
                 _DelitosSection(delitos: criminal.allDelitos),
                 const Gap(16),
 
                 // How to report
-                _ReportSection(onCall: _call1818),
+                _ReportSection(),
                 const Gap(16),
 
-                // Report sighting button
+                // Report sighting
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
@@ -186,9 +151,7 @@ class _DetailBody extends StatelessWidget {
                       showModalBottomSheet<void>(
                         context: context,
                         isScrollControlled: true,
-                        builder: (_) => ReportBottomSheet(
-                          criminal: criminal,
-                        ),
+                        builder: (_) => ReportBottomSheet(criminal: criminal),
                       );
                     },
                     icon: const Icon(Icons.report_problem_outlined),
@@ -212,6 +175,81 @@ class _DetailBody extends StatelessWidget {
   }
 }
 
+class _DetailHeader extends StatelessWidget {
+  const _DetailHeader({
+    required this.bytes,
+    required this.heroTag,
+    required this.fullName,
+  });
+
+  final dynamic bytes;
+  final String heroTag;
+  final String fullName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Photo or placeholder
+        if (bytes != null)
+          Hero(
+            tag: heroTag,
+            child: Image.memory(bytes, fit: BoxFit.cover),
+          )
+        else
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [AppColors.primaryDark, AppColors.primary],
+              ),
+            ),
+            child: const Center(
+              child: Icon(Icons.person, size: 96, color: Colors.white24),
+            ),
+          ),
+
+        // Gradient overlay — darkens bottom for name legibility
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: const [0.0, 0.4, 1.0],
+              colors: [
+                Colors.black.withValues(alpha: 0.35),
+                Colors.black.withValues(alpha: 0.0),
+                Colors.black.withValues(alpha: 0.85),
+              ],
+            ),
+          ),
+        ),
+
+        // Name at bottom of header
+        Positioned(
+          left: 16,
+          right: 16,
+          bottom: 20,
+          child: Text(
+            fullName,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 20,
+              height: 1.25,
+              shadows: [Shadow(color: Colors.black54, blurRadius: 8)],
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _PeligrosidadCard extends StatelessWidget {
   const _PeligrosidadCard({required this.nivel, required this.color});
 
@@ -223,9 +261,9 @@ class _PeligrosidadCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -239,7 +277,7 @@ class _PeligrosidadCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: color.withOpacity(0.7),
+                  color: color.withValues(alpha: 0.7),
                   letterSpacing: 1,
                 ),
               ),
@@ -278,18 +316,22 @@ class _InfoCard extends StatelessWidget {
             ),
             const Divider(height: 20),
             _InfoRow(
+              icon: Icons.wc_rounded,
               label: 'Sexo',
               value: criminal.sexo == 1 ? 'Masculino' : 'Femenino',
             ),
             _InfoRow(
+              icon: Icons.location_city_rounded,
               label: 'Departamento',
               value: criminal.departamento,
             ),
             _InfoRow(
+              icon: Icons.map_rounded,
               label: 'Provincia',
               value: criminal.provincia,
             ),
             _InfoRow(
+              icon: Icons.badge_rounded,
               label: 'ID Requisitoriado',
               value: '${criminal.idRequisitoriado}',
             ),
@@ -301,19 +343,26 @@ class _InfoCard extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
+  final IconData icon;
   final String label;
   final String value;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
+          Icon(icon, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
+          const SizedBox(width: 10),
           SizedBox(
-            width: 130,
+            width: 110,
             child: Text(
               label,
               style: Theme.of(context).textTheme.bodySmall,
@@ -352,9 +401,11 @@ class _DelitosSection extends StatelessWidget {
               .map(
                 (d) => Chip(
                   label: Text(d, style: const TextStyle(fontSize: 12)),
-                  backgroundColor:
-                      AppColors.peligroExtremo.withOpacity(0.1),
+                  backgroundColor: AppColors.peligroExtremo.withValues(alpha: 0.1),
                   labelStyle: const TextStyle(color: AppColors.peligroExtremo),
+                  side: BorderSide(
+                    color: AppColors.peligroExtremo.withValues(alpha: 0.3),
+                  ),
                 ),
               )
               .toList(),
@@ -365,9 +416,7 @@ class _DelitosSection extends StatelessWidget {
 }
 
 class _ReportSection extends StatelessWidget {
-  const _ReportSection({required this.onCall});
-
-  final VoidCallback onCall;
+  const _ReportSection();
 
   @override
   Widget build(BuildContext context) {
@@ -407,7 +456,7 @@ class _ReportSection extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: onCall,
+                onPressed: () => AppLauncher.call(AppConstants.reportPhoneUri),
                 icon: const Icon(Icons.phone, color: AppColors.rewardGreen),
                 label: const Text(
                   'Llamar al 0-800-40-007',
@@ -469,27 +518,23 @@ class _StepItem extends StatelessWidget {
 }
 
 class _ErrorBody extends StatelessWidget {
-  const _ErrorBody({required this.error});
+  const _ErrorBody({required this.error, required this.hash, required this.ref});
 
-  final String error;
+  final Object error;
+  final String hash;
+  final WidgetRef ref;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detalle')),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
-            const Gap(16),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: const Text('Detalle'),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+      ),
+      body: AppErrorWidget(
+        error: error,
+        onRetry: () => ref.invalidate(criminalDetailProvider(hash)),
       ),
     );
   }

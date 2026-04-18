@@ -235,7 +235,7 @@ class _ActiveChip extends StatelessWidget {
       padding: const EdgeInsets.only(right: 6),
       child: Chip(
         label: Text(label, style: const TextStyle(fontSize: 11)),
-        backgroundColor: AppColors.primary.withOpacity(0.12),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.12),
         labelStyle: const TextStyle(color: AppColors.primary),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         padding: const EdgeInsets.symmetric(horizontal: 4),

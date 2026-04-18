@@ -140,13 +140,40 @@ flutter test
 
 # Análisis estático
 flutter analyze
+```
 
-# Build APK debug
+### Compilar Android
+
+```bash
+# APK debug (para pruebas directas en dispositivo)
 flutter build apk --debug
 
-# Build iOS release
-flutter build ios --release
+# APK release (firmado con keystore configurado)
+flutter build apk --release
+
+# App Bundle para Play Store
+flutter build appbundle --release
+
+# Instalar APK en dispositivo conectado
+flutter install
 ```
+
+> **Nota SSL (BLOCKER en release):** El servidor de MININTER tiene una cadena TLS incompleta. En release, Android rechaza las llamadas a la API. Ver sección de [problemas conocidos](#problemas-conocidos) para la solución pendiente.
+
+### Compilar iOS
+
+```bash
+# Build release (requiere Xcode y cuenta de desarrollador Apple)
+flutter build ios --release
+
+# Build sin codesign (para pruebas sin cuenta de desarrollador)
+flutter build ios --release --no-codesign
+
+# Abrir en Xcode para archivar y subir a App Store
+open ios/Runner.xcworkspace
+```
+
+> **Requisito:** Xcode 15+ y macOS son necesarios para compilar iOS. Para distribuir en App Store se requiere una cuenta de Apple Developer.
 
 ---
 

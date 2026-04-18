@@ -4,9 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/app_launcher.dart';
 import '../../domain/entities/criminal_summary.dart';
-import '../../core/utils/formatters.dart';
-
 class ReportBottomSheet extends StatefulWidget {
   const ReportBottomSheet({
     super.key,
@@ -49,9 +48,7 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      // Fallback: call 1818
-      final phoneUri = Uri.parse(AppConstants.reportPhoneUri);
-      if (await canLaunchUrl(phoneUri)) await launchUrl(phoneUri);
+      await AppLauncher.call(AppConstants.reportPhoneUri);
     }
 
     if (mounted) Navigator.pop(context);
@@ -93,10 +90,10 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.warning.withOpacity(0.12),
+                  color: AppColors.warning.withValues(alpha:0.12),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.warning.withOpacity(0.4),
+                    color: AppColors.warning.withValues(alpha:0.4),
                   ),
                 ),
                 child: const Row(
@@ -167,10 +164,8 @@ class _ReportBottomSheetState extends State<ReportBottomSheet> {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: () async {
-                          final uri = Uri.parse(AppConstants.reportPhoneUri);
-                          if (await canLaunchUrl(uri)) await launchUrl(uri);
-                        },
+                        onPressed: () =>
+                            AppLauncher.call(AppConstants.reportPhoneUri),
                         icon: const Icon(
                           Icons.phone,
                           color: AppColors.rewardGreen,

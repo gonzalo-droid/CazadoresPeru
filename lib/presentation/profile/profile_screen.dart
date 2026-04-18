@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/app_launcher.dart';
 import 'profile_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -62,32 +63,20 @@ class ProfileScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text('Acerca del Programa de Recompensas'),
-            onTap: () async {
-              final uri = Uri.parse(AppConstants.recompensasUrl);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
+            trailing: const Icon(Icons.open_in_new, size: 16),
+            onTap: () => AppLauncher.openUrl(AppConstants.recompensasUrl),
           ),
           ListTile(
             leading: const Icon(Icons.local_police_outlined),
             title: const Text('Policía Nacional del Perú'),
-            onTap: () async {
-              final uri = Uri.parse(AppConstants.pnpUrl);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
+            trailing: const Icon(Icons.open_in_new, size: 16),
+            onTap: () => AppLauncher.openUrl(AppConstants.pnpUrl),
           ),
           ListTile(
             leading: const Icon(Icons.account_balance_outlined),
             title: const Text('Ministerio del Interior'),
-            onTap: () async {
-              final uri = Uri.parse(AppConstants.mininterUrl);
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
+            trailing: const Icon(Icons.open_in_new, size: 16),
+            onTap: () => AppLauncher.openUrl(AppConstants.mininterUrl),
           ),
 
           const Divider(),
@@ -97,22 +86,16 @@ class ProfileScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.description_outlined),
             title: const Text('Términos y Condiciones'),
-            onTap: () async {
-              final uri = Uri.parse('${AppConstants.recompensasUrl}/terminos');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.inAppWebView);
-              }
-            },
+            trailing: const Icon(Icons.open_in_new, size: 16),
+            onTap: () =>
+                AppLauncher.openUrl('${AppConstants.recompensasUrl}/terminos'),
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
             title: const Text('Política de Privacidad'),
-            onTap: () async {
-              final uri = Uri.parse('${AppConstants.recompensasUrl}/privacidad');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.inAppWebView);
-              }
-            },
+            trailing: const Icon(Icons.open_in_new, size: 16),
+            onTap: () => AppLauncher.openUrl(
+                '${AppConstants.recompensasUrl}/privacidad'),
           ),
 
           const Divider(),
@@ -122,13 +105,12 @@ class ProfileScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.feedback_outlined),
             title: const Text('Sugerencias y Feedback'),
+            subtitle: const Text('app@recompensas.pe'),
             onTap: () async {
               final uri = Uri.parse(
                 'mailto:app@recompensas.pe?subject=Feedback+Cazadores+Perú',
               );
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
-              }
+              if (await canLaunchUrl(uri)) await launchUrl(uri);
             },
           ),
 
