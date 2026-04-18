@@ -42,7 +42,14 @@
       "Bash(flutter doctor:*)",
       "Bash(/Users/gonzalo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/scripts/start-server.sh *)",
       "Bash(/Users/gonzalo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/start-server.sh *)",
-      "Bash(/Users/gonzalo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/stop-server.sh *)"
+      "Bash(/Users/gonzalo/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/stop-server.sh *)",
+      "Bash(openssl s_client -connect sispasvehapp.mininter.gob.pe:443 -showcerts)",
+      "Bash(openssl x509 *)",
+      "Bash(awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/')",
+      "Bash(awk 'BEGIN{n=0} /BEGIN CERT/{n++} n==2{print}')",
+      "Bash(awk 'BEGIN{c=0} /-----BEGIN CERTIFICATE-----/{c++; if\\(c==2\\) p=1} p{print} /-----END CERTIFICATE-----/ && c==2{exit}')",
+      "Bash(adb shell *)",
+      "Bash(adb install *)"
     ]
   },
   "mcpServers": {

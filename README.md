@@ -158,7 +158,13 @@ flutter build appbundle --release
 flutter install
 ```
 
-> **Nota SSL (BLOCKER en release):** El servidor de MININTER tiene una cadena TLS incompleta. En release, Android rechaza las llamadas a la API. Ver sección de [problemas conocidos](#problemas-conocidos) para la solución pendiente.
+> **SSL — Certificate Pinning:** El servidor de MININTER envía una cadena TLS incompleta (solo el certificado leaf, sin el intermedio). Android (BoringSSL) rechaza esto en release. La solución implementada es certificate pinning en `dio_client.dart`: en vez de aceptar cualquier certificado inválido, se acepta únicamente el certificado específico de MININTER comparando su SHA-256. iOS no sufre este problema porque usa AIA fetching para completar la cadena automáticamente.
+>
+> **Cuando MININTER renueve su certificado**, la app dejará de conectar en Android. Para actualizar el hash pinado:
+> ```bash
+> openssl s_client -connect sispasvehapp.mininter.gob.pe:443 2>/dev/null | openssl x509 -noout -fingerprint -sha256
+> # Convertir output a minúsculas sin colones y reemplazar en _pinnedFingerprints (dio_client.dart)
+> ```
 
 ### Compilar iOS
 

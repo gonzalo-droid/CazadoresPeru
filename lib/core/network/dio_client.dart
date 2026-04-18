@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../constants/app_constants.dart';
 
 part 'dio_client.g.dart';
+
+// SHA-256 del cert leaf de sispasvehapp.mininter.gob.pe
+// Vence: verificar con `openssl s_client -connect sispasvehapp.mininter.gob.pe:443 | openssl x509 -noout -fingerprint -sha256`
+// Si la app deja de conectar en release, actualizar este hash y publicar nueva versión.
+const _pinnedFingerprints = {
+  'b7fc7a697f58e66a5edc42ef4bf5c31698592f2251d0e96a753974dce5ec17ce',
+};
+
+bool _isMininterCertTrusted(X509Certificate cert) {
+  final fingerprint = sha256.convert(cert.der).toString();
+  return _pinnedFingerprints.contains(fingerprint);
+}
 
 @Riverpod(keepAlive: true)
 Dio dioClient(DioClientRef ref) {
@@ -33,14 +46,16 @@ Dio dioClient(DioClientRef ref) {
     ),
   );
 
-  // Android's BoringSSL rejects the MININTER server's incomplete cert chain.
-  // Bypass certificate validation in debug builds only.
   if (!kIsWeb) {
     (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
       final client = HttpClient();
       client.badCertificateCallback = (cert, host, port) {
-        debugPrint('[SSL] Bad cert for $host:$port — ${cert.subject}');
-        return kDebugMode; // allow in debug, reject in release
+        if (host != 'sispasvehapp.mininter.gob.pe') return false;
+        final trusted = _isMininterCertTrusted(cert);
+        if (!trusted) {
+          debugPrint('[SSL] Cert rechazado para $host — hash no coincide');
+        }
+        return trusted;
       };
       return client;
     };
@@ -48,15 +63,16 @@ Dio dioClient(DioClientRef ref) {
 
   dio.interceptors.addAll([
     _RetryInterceptor(dio),
-    PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      error: true,
-      compact: false,
-      maxWidth: 200,
-    ),
+    if (kDebugMode)
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: false,
+        maxWidth: 200,
+      ),
   ]);
 
   return dio;
@@ -73,7 +89,6 @@ class _RetryInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    // Log the real underlying error for debugging
     final cause = err.error;
     if (cause != null) {
       debugPrint('[DIO] Underlying error type: ${cause.runtimeType}');
