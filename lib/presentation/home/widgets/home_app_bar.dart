@@ -18,7 +18,6 @@ class HomeAppBar extends StatelessWidget {
       elevation: 0,
       flexibleSpace: const FlexibleSpaceBar(
         background: _AppBarBackground(),
-        collapseMode: CollapseMode.pin,
       ),
     );
   }
